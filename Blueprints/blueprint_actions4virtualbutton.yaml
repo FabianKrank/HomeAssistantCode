@@ -37,7 +37,6 @@ actions:
             entity_id: !input button_virtual
             state:
               - Doppel Klick
-          sequence:
-          - action: !input action_off
+          sequence: !input action_off
     
 mode: single
