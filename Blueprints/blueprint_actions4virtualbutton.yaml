@@ -15,7 +15,7 @@ blueprint:
             description: Aktion die beim "ausschalten" durchgeführt wird
             selector:
                 action:
-        Entitys2SwitchOff:
+        entitys2SwitchOff:
             name: GerätelisteEinschaltzustand
             description: Geräte die Überprüft werden sollen um Ausschalten durchzuführen
             selector:
@@ -27,16 +27,19 @@ blueprint:
             selector:
                 action:
         action_doubleClick:
-            name: EinfachKlickAktion
+            name: DoppelKlickAktion
             description: Aktion die beim "Doppel Klick" durchgeführt wird
             selector:
                 action:
         action_trippleClick:
-            name: EinfachKlickAktion
+            name: DreifachKlickAktion
             description: Aktion die beim "Dreifach Klick" durchgeführt wird
             selector:
                 action:
-          
+  
+variables:
+  devices_to_check: !input entitys2SwitchOff
+  
 triggers:
   - trigger: state
     entity_id:
@@ -52,20 +55,27 @@ actions:
             state:
               - Einfach Klick
           sequence:
-             - if:
-                - condition: template
+          - choose:
+              - conditions:
+                  - condition: template
                     value_template: >
-                      {{ expand(!input Entitys2SwitchOff)
-                         | selectattr('state','eq','on')
+                      {{ expand((devices_to_check))
+                         | selectattr('state', 'eq', 'on')
                          | list
                          | count > 0 }}
-             then: !input action_off
-             else: !input action_oneClick
+                sequence: !input action_off
+            default: !input action_oneClick
         - conditions:
           - condition: state
             entity_id: !input button_virtual
             state:
               - Doppel Klick
           sequence: !input action_doubleClick
+        - conditions:
+          - condition: state
+            entity_id: !input button_virtual
+            state:
+              - Dreifach Klick
+          sequence: !input action_trippleClick
     
 mode: single
