@@ -10,11 +10,6 @@ blueprint:
                 entity:
                     filter:
                         - domain: input_select
-        action_off:
-            name: Ausschalteaktion
-            description: Aktion die beim "ausschalten" durchgeführt wird
-            selector:
-                action:
         entitys2SwitchOff:
             name: GerätelisteEinschaltzustand
             description: Geräte die Überprüft werden sollen um Ausschalten durchzuführen
@@ -63,7 +58,10 @@ actions:
                          | selectattr('state', 'eq', 'on')
                          | list
                          | count > 0 }}
-                sequence: !input action_off
+                sequence:
+                  - service: homeassistant.turn_off
+                    target:
+                        entity_id: !input entitys2SwitchOff
             default: !input action_oneClick
         - conditions:
           - condition: state
