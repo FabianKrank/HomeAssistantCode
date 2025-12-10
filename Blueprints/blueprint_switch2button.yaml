@@ -1,6 +1,6 @@
 blueprint:
     name: Switch2VirtualButton
-    description: ""
+    description: "Nutzt den Input eines physikalischen Schalters und beschreibt einen HELPER mit dem Tasterergebnis"
     domain: automation
     input:
         switch_source:
