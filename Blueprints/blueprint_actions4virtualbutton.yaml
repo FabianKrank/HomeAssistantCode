@@ -15,17 +15,12 @@ blueprint:
             description: Aktion die beim "ausschalten" durchgeführt wird
             selector:
                 action:
-        ListDevices2SwitchOff:
+        Entitys2SwitchOff:
             name: GerätelisteEinschaltzustand
             description: Geräte die Überprüft werden sollen um Ausschalten durchzuführen
             selector:
                 entity:
                     multiple: true
-        contition_off:
-            name: BedingungAuschaltaktion
-            description: Bedingung die erfüllt sein muss, damit bei EInfachklick die Ausschaltaktion durchgeführt wird
-            selector:
-                condition:
         action_oneClick:
             name: EinfachKlickAktion
             description: Aktion die beim "Einfach Klick" durchgeführt wird
@@ -55,7 +50,22 @@ actions:
           - condition: state
             entity_id: !input button_virtual
             state:
+              - Einfach Klick
+          sequence:
+             - if:
+                - condition: template
+                    value_template: >
+                      {{ expand(!input Entitys2SwitchOff)
+                         | selectattr('state','eq','on')
+                         | list
+                         | count > 0 }}
+             then: !input action_off
+             else: !input action_oneClick
+        - conditions:
+          - condition: state
+            entity_id: !input button_virtual
+            state:
               - Doppel Klick
-          sequence: !input action_off
+          sequence: !input action_doubleClick
     
 mode: single
