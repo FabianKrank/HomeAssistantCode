@@ -1,0 +1,43 @@
+blueprint:
+    name: Actions4VirtualButton
+    description: "Tasterbelgung Virtueller Taster"
+    domain: automation
+    input:
+        switch_source:
+            name: Source Switch
+            description: Schalter, der als Taster verwendet werden soll
+            selector:
+                entity:
+                    filter:
+                        - domain: binary_sensor
+        button_virtual:
+            name: Virtual button_virtual
+            description: Virtueller Taster, der von Schalter getriggert werden soll
+            selector:
+                entity:
+                    filter:
+                        - domain: input_select
+        action_off:
+            name: Ausschalteaktion
+            description: Aktion die beim "ausschalten" durchgeführt wird
+            selector:
+                action:
+          
+triggers:
+  - trigger: state
+    entity_id:
+      - !input button_virtual
+    from:
+      - IDLE
+conditions: []
+actions:
+     - choose:
+        - conditions:
+          - condition: state
+            entity_id: !input button_virtual
+            state:
+              - Doppel Klick
+          sequence:
+          - action: !input action_off
+    
+mode: single
