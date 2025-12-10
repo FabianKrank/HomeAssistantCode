@@ -3,13 +3,6 @@ blueprint:
     description: "Tasterbelgung Virtueller Taster"
     domain: automation
     input:
-        switch_source:
-            name: Source Switch
-            description: Schalter, der als Taster verwendet werden soll
-            selector:
-                entity:
-                    filter:
-                        - domain: binary_sensor
         button_virtual:
             name: Virtual button_virtual
             description: Virtueller Taster, der von Schalter getriggert werden soll
@@ -20,6 +13,32 @@ blueprint:
         action_off:
             name: Ausschalteaktion
             description: Aktion die beim "ausschalten" durchgeführt wird
+            selector:
+                action:
+        ListDevices2SwitchOff:
+            name: GerätelisteEinschaltzustand
+            description: Geräte die Überprüft werden sollen um Ausschalten durchzuführen
+            selector:
+                entity:
+                    multiple: true
+        contition_off:
+            name: BedingungAuschaltaktion
+            description: Bedingung die erfüllt sein muss, damit bei EInfachklick die Ausschaltaktion durchgeführt wird
+            selector:
+                condition:
+        action_oneClick:
+            name: EinfachKlickAktion
+            description: Aktion die beim "Einfach Klick" durchgeführt wird
+            selector:
+                action:
+        action_doubleClick:
+            name: EinfachKlickAktion
+            description: Aktion die beim "Doppel Klick" durchgeführt wird
+            selector:
+                action:
+        action_trippleClick:
+            name: EinfachKlickAktion
+            description: Aktion die beim "Dreifach Klick" durchgeführt wird
             selector:
                 action:
           
