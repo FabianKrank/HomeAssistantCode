@@ -1,0 +1,74 @@
+alias: ku.CoverDown_Erker
+description: ""
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.ku_2pm_02_rolloerkerrechts_input_1
+    from:
+      - "off"
+      - "on"
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.ku_2pm_02_rolloerkerrechts_input_1
+            state:
+              - "on"
+        sequence:
+          - action: cover.close_cover
+            metadata: {}
+            target:
+              entity_id: cover.ku_rollo_group_erker
+            data: {}
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.ku_2pm_02_rolloerkerrechts_input_1
+            state:
+              - "off"
+        sequence:
+          - action: cover.stop_cover
+            metadata: {}
+            target:
+              entity_id: cover.ku_rollo_group_erker
+            data: {}
+            enabled: true
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 0
+              milliseconds: 500
+          - variables:
+              ziel: >-
+                {{ state_attr('cover.ku_2pm_03_rolloerkermitte',
+                'current_position') | int }}
+              links: >-
+                {{ state_attr('cover.shelly_ku_2pm_04_rolloerkerlinks',
+                'current_position') | int }}
+              rechts: >-
+                {{ state_attr('cover.ku_2pm_02_rolloerkerrechts',
+                'current_position') | int }}
+              toleranz: 2
+          - parallel:
+              - if:
+                  - condition: template
+                    value_template: "{{ (rechts - ziel) | abs > toleranz }}"
+                then:
+                  - action: cover.set_cover_position
+                    metadata: {}
+                    target:
+                      entity_id: cover.ku_2pm_02_rolloerkerrechts
+                    data:
+                      position: "{{ ziel }}"
+              - if:
+                  - condition: template
+                    value_template: "{{ (links - ziel) | abs > toleranz }}"
+                then:
+                  - action: cover.set_cover_position
+                    metadata: {}
+                    target:
+                      entity_id:
+                        - cover.shelly_ku_2pm_04_rolloerkerlinks
+                    data:
+                      position: "{{ ziel }}"
+mode: single
