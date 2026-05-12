@@ -1,0 +1,82 @@
+blueprint:
+    name: Switch2VirtualButtonTest2
+    description: "Nutzt den Input eines physikalischen Schalters und beschreibt einen HELPER mit dem Tasterergebnis"
+    domain: automation
+    input:
+        switch_source:
+            name: Source Switch
+            description: Schalter, der als Taster verwendet werden soll
+            selector:
+                entity:
+                    filter:
+                        - domain: binary_sensor
+        button_virtual:
+            name: Virtual button_virtual
+            description: Virtueller Taster, der von Schalter getriggert werden soll
+            selector:
+                target:
+                    entity:
+                        - domain: input_select                 
+          
+triggers:
+  - trigger: state
+    entity_id:
+      - !input switch_source
+conditions: []
+actions:
+  - wait_for_trigger:
+      - trigger: state
+        entity_id:
+          - !input switch_source
+    timeout:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 300
+    continue_on_timeout: true
+  - if:
+      - condition: template
+        value_template: "{{  wait.trigger == none }}"
+    then:
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: Einfach Klick
+        target: !input button_virtual
+    else:
+      - wait_for_trigger:
+          - trigger: state
+            entity_id:
+              - !input switch_source
+        timeout:
+          hours: 0
+          minutes: 0
+          seconds: 0
+          milliseconds: 300
+        continue_on_timeout: true
+      - if:
+          - condition: template
+            value_template: "{{  wait.trigger == none }}"
+        then:
+          - action: input_select.select_option
+            metadata: {}
+            data:
+              option: Doppel Klick
+            target: !input button_virtual
+        else:
+          - action: input_select.select_option
+            metadata: {}
+            data:
+              option: Dreifach Klick
+            target: !input button_virtual
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: input_select.select_option
+    metadata: {}
+    data:
+      option: IDLE
+    target: !input button_virtual
+mode: single
