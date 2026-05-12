@@ -17,10 +17,16 @@ conditions: []
 actions:
   - choose:
       - conditions:
-          - condition: state
-            entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_0
-            state:
-              - "on"
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_0
+                state:
+                  - "on"
+              - condition: state
+                entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_1
+                state:
+                  - "on"
         sequence:
           - action: scene.create
             metadata: {}
@@ -42,49 +48,29 @@ actions:
                 - light.spot_kk_3
                 - light.spot_ks_1
                 - light.spot_ks_2
-          - action: scene.turn_on
-            metadata: {}
-            data: {}
-            target:
-              entity_id: scene.light_roomkuche_koch_scheinwerfer
-          - action: light.turn_off
-            metadata: {}
-            target:
-              entity_id:
-                - light.kuche_wassererker
-                - light.kuche_technikerner
-            data: {}
-      - conditions:
-          - condition: state
-            entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_1
-            state:
-              - "on"
-        sequence:
-          - action: scene.create
-            metadata: {}
-            data:
-              scene_id: tempkuinsel
-              snapshot_entities:
-                - light.spot_ki_11
-                - light.spot_ki_12
-                - light.spot_ki_21
-                - light.spot_ki_22
-                - light.spot_ki_31
-                - light.spot_ki_32
-                - light.spot_ki_41
-                - light.spot_ki_42
-                - light.spot_ki_51
-                - light.spot_ki_52
-                - light.spot_kk_1
-                - light.spot_kk_2
-                - light.spot_kk_3
-                - light.spot_ks_1
-                - light.spot_ks_2
-          - action: scene.turn_on
-            metadata: {}
-            data: {}
-            target:
-              entity_id: scene.light_roomkuche_esslicht
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_0
+                    state:
+                      - "on"
+                sequence:
+                  - action: scene.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: scene.light_roomkuche_koch_scheinwerfer
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.shelly_ku_2pm_04_rolloerkerlinks_input_1
+                    state:
+                      - "on"
+                sequence:
+                  - action: scene.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: scene.light_roomkuche_esslicht
           - action: light.turn_off
             metadata: {}
             target:
