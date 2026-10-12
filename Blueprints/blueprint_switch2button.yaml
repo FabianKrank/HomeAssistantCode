@@ -22,12 +22,18 @@ triggers:
   - trigger: state
     entity_id:
       - !input switch_source
+    from:
+      - 'off'
+      - 'on'
 conditions: []
 actions:
   - wait_for_trigger:
       - trigger: state
         entity_id:
           - !input switch_source
+        from:
+          - 'off'
+          - 'on'
     timeout:
       hours: 0
       minutes: 0
@@ -48,6 +54,9 @@ actions:
           - trigger: state
             entity_id:
               - !input switch_source
+            from:
+              - 'off'
+              - 'on'
         timeout:
           hours: 0
           minutes: 0
