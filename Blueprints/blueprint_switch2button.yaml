@@ -24,7 +24,15 @@ triggers:
       - !input switch_source
     from:
       - 'off'
+    to:
       - 'on'
+  - trigger: state
+    entity_id:
+      - !input switch_source
+    from:
+      - 'on'
+    to:
+      - 'off'
 conditions: []
 actions:
   - wait_for_trigger:
